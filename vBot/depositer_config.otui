@@ -1,0 +1,159 @@
+StashItem < Panel
+  height: 40
+
+  BotItem
+    id: item
+    anchors.top: parent.top
+    margin-top: 2
+    anchors.left: parent.left
+    image-source: /images/ui/item-blessed
+
+  UIWidget
+    id: name
+    anchors.top: prev.top
+    margin-top: 1
+    anchors.bottom: prev.verticalCenter
+    anchors.left: prev.right
+    anchors.right: parent.right
+    margin-left: 5
+    text-align:left
+    text: item name
+    font: verdana-9px
+    color: #FFFFFF
+
+  UIWidget
+    id: slot
+    anchors.top: prev.bottom
+    margin-top: 3
+    anchors.bottom: Item.bottom
+    anchors.left: prev.left
+    anchors.right: parent.right    
+    font: verdana-9px
+    text-align:left
+    text: Add item to select locker.
+    color: #CCCCCC
+
+DepositerPanel < UIWindow
+  size: 230 380
+  !text: tr('')
+  border: 1 black
+  anchors.centerIn: parent
+  margin-top: -60
+  @onEscape: self:hide()
+
+  Panel
+    id: background
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    background-color: black
+    opacity: 0.70
+
+  Panel
+    id: topPanel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    size: 120 30
+    text-align: center
+    !text: tr('LNS Custom | Stashing')
+    color: orange
+    margin-left: 0
+    margin-right: 0
+    background-color: black
+    $hover:
+      image-color: gray
+  
+  Panel
+    id: iconPanel
+    anchors.top: parent.top
+    anchors.left: parent.left
+    size: 60 60
+    margin-top: -19
+    margin-left: -15
+
+  UIButton
+    id: closePanel
+    anchors.top: topPanel.top
+    anchors.right: parent.right
+    size: 18 18
+    margin-top: 6
+    margin-right: 10
+    background-color: orange
+    text: X
+    color: white
+    opacity: 1.00
+    $hover:
+      color: black
+      opacity: 0.80
+
+  UIWidget
+    id: title
+    anchors.top: prev.bottom
+    anchors.left: parent.left
+    anchors.right: parent.right
+    margin-left: 5
+    margin-right: 5
+    margin-top: 10
+    text: Double click here to add item.
+    text-align: center
+    font: verdana-9px
+    color: #aeaeae           
+
+  ScrollablePanel
+    id: DepositerList
+    image-source: /images/ui/panel_flat
+    image-border: 1
+    anchors.top: prev.bottom
+    margin-top: 5
+    anchors.left: parent.left
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    margin-bottom: 10
+    margin-left: 10
+    margin-right: 10
+    image-color: #363636
+    padding: 2
+    padding-left: 4
+    vertical-scrollbar: DepositerScrollBar
+    layout:
+      type: verticalBox
+
+  VerticalScrollBar
+    id: DepositerScrollBar
+    anchors.top: DepositerList.top
+    anchors.bottom: DepositerList.bottom
+    anchors.right: DepositerList.right
+    step: 14
+    image-color: #363636
+    pixels-scroll: true
+
+  ResizeBorder
+    id: bottomResizeBorder
+    anchors.fill: next
+    height: 3
+    minimum: 180
+    visible: false
+    maximum: 800
+    margin-left: 3
+    margin-right: 3
+    background: #ffffff88
+
+  HorizontalSeparator
+    id: sep
+    visible: false
+    anchors.right: parent.right
+    anchors.left: parent.left
+    anchors.bottom: CloseButton.top
+    margin-bottom: 8    
+
+  Button
+    id: CloseButton
+    !text: tr('Close')
+    visible: false
+    font: cipsoftFont
+    anchors.right: parent.right
+    anchors.bottom: parent.bottom
+    size: 45 21
+    margin-right: 5
