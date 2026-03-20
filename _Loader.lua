@@ -12,8 +12,6 @@ local function loadScript(name)
   return dofile("/vBot/" .. name .. ".lua")
 end
 
--- here you can set manually order of scripts
--- libraries should be loaded first
 local luaFiles = {
   "extras", 
   "items",
