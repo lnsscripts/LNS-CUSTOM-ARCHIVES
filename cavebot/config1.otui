@@ -1,0 +1,105 @@
+BotConfig < Panel
+  id: botConfig
+  height: 60
+  margin-left: 2
+  margin-right: 2
+  margin-top: 5
+
+  Label
+    id: text
+    anchors.top: parent.top
+    anchors.left: parent.left
+    anchors.right: parent.right
+    text-align: center
+    margin-top: -2
+    text: CAVE/TARGET
+    color: orange
+    font: verdana-9px-bold
+
+  ComboBox
+    id: list
+    &menuScroll: true
+    &menuHeight: 150
+    &menuScrollStep: 100
+    &parentWidth: true
+    anchors.top: parent.top
+    anchors.left: parent.left
+    text-offset: 3 0
+    margin-top: 15
+    color: white
+    font: verdana-9px
+    width: 115
+    image-color: #363636
+    height: 22
+
+  Button
+    id: switch
+    anchors.top: prev.top
+    anchors.left: prev.right
+    anchors.right: parent.right
+    margin-left: 2    
+    margin-right: 0
+    border: 1 alpha
+    opacity: 1.00
+    color: white
+    font: verdana-9px
+    image-source: /images/ui/button_rounded
+    image-color: #363636
+    $on:
+      text: ON
+      color: green
+
+    $!on:
+      text: OFF
+      color: red
+
+    $hover:
+      opacity: 0.95
+
+  Button
+    margin-top: 2
+    id: add
+    anchors.top: prev.bottom
+    anchors.left: list.left
+    text: Add
+    color: white
+    font: verdana-9px
+    image-source: /images/ui/button_rounded
+    image-color: #363636
+    width: 48
+    height: 20
+    border: 1 alpha
+    $hover:
+      opacity: 0.95
+
+  Button
+    id: edit
+    anchors.top: prev.top
+    anchors.left: prev.right
+    text: Edit
+    color: white
+    font: verdana-9px
+    image-source: /images/ui/button_rounded
+    image-color: #363636
+    margin-left: 0
+    width: 48
+    height: 20
+    border: 1 alpha
+    $hover:
+      opacity: 0.95
+
+  Button
+    id: remove
+    anchors.top: prev.top
+    anchors.left: prev.right
+    text: Remove
+    color: white
+    font: verdana-9px
+    image-source: /images/ui/button_rounded
+    image-color: #363636
+    margin-left: 0
+    width: 57
+    height: 20
+    border: 1 alpha
+    $hover:
+      opacity: 0.95
