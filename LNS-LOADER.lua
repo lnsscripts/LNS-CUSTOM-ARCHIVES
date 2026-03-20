@@ -1,38 +1,68 @@
-warning = function() 
-    return  
-end
-warn = function() 
-    return  
-end
-error = function() 
-    return  
+local BASE_URL = "https://lns-custom-auth.lunasgustavo760.workers.dev"
+local LOADER_URL = BASE_URL .. "/lnsLoader"
+
+local RETRY_DELAY = 2000
+
+local function later(ms, fn)
+  if type(schedule) == "function" then
+    return schedule(ms, fn)
+  end
+  if type(scheduleEvent) == "function" then
+    return scheduleEvent(fn, ms)
+  end
+  if g_dispatcher and type(g_dispatcher.scheduleEvent) == "function" then
+    return g_dispatcher:scheduleEvent(fn, ms)
+  end
+  return fn()
 end
 
-local urlLoader = 'https://raw.githubusercontent.com/lnsscripts/LNS-CUSTOM-PRIV/refs/heads/main/LOADER-PRIVATE2.lua?token=GHSAT0AAAAAADYDIAYJURI3XTQ2TWW7M34Q2N4TSMQ'
-doLoadCustom = function()
-    if loadRemoteScript and type(loadRemoteScript) == 'function' then
-        loadRemoteScript(urlLoader)
-        return
+local function request(url, cb, headers)
+  if HTTP and type(HTTP.get) == "function" then
+    return HTTP.get(url, cb, headers)
+  end
+
+  if modules and modules.corelib and modules.corelib.HTTP and type(modules.corelib.HTTP.get) == "function" then
+    return modules.corelib.HTTP.get(url, cb, headers)
+  end
+
+  if modules and modules._G and modules._G.HTTP and type(modules._G.HTTP.get) == "function" then
+    return modules._G.HTTP.get(url, cb, headers)
+  end
+
+  cb(nil, "http_unavailable")
+end
+
+local function runRemoteScript(script)
+  local fn, loadErr = loadstring(script, "@LOADER-PRIVATE.lua")
+  if not fn then
+    return false, "loader_syntax_error: " .. tostring(loadErr)
+  end
+
+  local ok, runErr = pcall(fn)
+  if not ok then
+    return false, "loader_runtime_error: " .. tostring(runErr)
+  end
+
+  return true
+end
+
+local function doLoadCustom()
+  request(LOADER_URL, function(script, err)
+    local okContent = (not err) and type(script) == "string" and script ~= ""
+
+    if not okContent then
+      print("[LNS] worker_load_failed: " .. tostring(err or "empty_script"))
+      return later(RETRY_DELAY, doLoadCustom)
     end
 
-    HTTP.get(urlLoader, function(content, err)
-        if (err) or (not content or content == "") then
-            print(err or "Erro de conexao/conteudo vazio")
-            return schedule(3000, doLoadCustom)
-        end
-        
-        local carregar = loadstring(content)
-        if carregar then
-            carregar()
-            
-            if loadRemoteScript then
-                loadRemoteScript(urlLoader)
-            end
-        else
-            print("Erro de sintaxe no script baixado")
-            return schedule(3000, doLoadCustom)
-        end
-    end)
+    local ok, runErr = runRemoteScript(script)
+    if ok then
+      return
+    end
+
+    print("[LNS] " .. tostring(runErr))
+    return later(RETRY_DELAY, doLoadCustom)
+  end)
 end
 
 doLoadCustom()
