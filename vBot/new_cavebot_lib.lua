@@ -23,7 +23,12 @@ local LOCKER_ACCESSTILE_MODIFIERS = {
 }
 
 local function CaveBotConfigParse()
-	local name = storage["_configs"]["targetbot_configs"]["selected"]
+	local name = z
+    if not storage._configs
+    or not storage._configs.targetbot_configs
+    or not storage._configs.targetbot_configs.selected then
+        return
+    end
     if not name then 
         return warn("[vBot] Please create a new TargetBot config and reset bot")
     end
