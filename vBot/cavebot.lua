@@ -43,10 +43,3 @@ if storage.extras.joinBot then UI.Label("-- [[ TargetBot ]] --") end
 TargetBot = {} -- global namespace
 importStyle("/targetbot/target.otui")
 importStyle("/targetbot/creature_editor.otui")
-dofile("/targetbot/creature.lua")
-dofile("/targetbot/creature_attack.lua")
-dofile("/targetbot/creature_editor.lua")
-dofile("/targetbot/creature_priority.lua")
-dofile("/targetbot/walking.lua")
--- main targetbot file, must be last
-dofile("/targetbot/target.lua")
