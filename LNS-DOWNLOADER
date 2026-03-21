@@ -33,7 +33,12 @@ local function request(url, cb, headers)
 end
 
 local function runRemoteScript(script)
-  local fn, loadErr = loadstring(script, "@LOADER-PRIVATE2.lua")
+  local loader = loadstring or load
+  if type(loader) ~= "function" then
+    return false, "load_function_unavailable"
+  end
+
+  local fn, loadErr = loader(script)
   if not fn then
     return false, "loader_syntax_error: " .. tostring(loadErr)
   end
@@ -48,15 +53,31 @@ end
 
 local function doLoadCustom()
   request(LOADER_URL, function(script, err)
-    local okContent = (not err) and type(script) == "string" and script ~= ""
+    if err then
+      print("[LNS] worker_load_failed: " .. tostring(err))
+      return later(RETRY_DELAY, doLoadCustom)
+    end
 
-    if not okContent then
-      print("[LNS] worker_load_failed: " .. tostring(err or "empty_script"))
+    if type(script) ~= "string" or script == "" then
+      print("[LNS] worker_load_failed: empty_script")
+      return later(RETRY_DELAY, doLoadCustom)
+    end
+
+    script = script:gsub("\r", "")
+
+    if script == "not found"
+      or script == "empty_script"
+      or script:find("^github_fail:")
+      or script:find("^missing GITHUB_TOKEN")
+      or script:find("^unknown_error")
+    then
+      print("[LNS] worker_response_error: " .. script)
       return later(RETRY_DELAY, doLoadCustom)
     end
 
     local ok, runErr = runRemoteScript(script)
     if ok then
+      print("[LNS] loader executed successfully")
       return
     end
 
