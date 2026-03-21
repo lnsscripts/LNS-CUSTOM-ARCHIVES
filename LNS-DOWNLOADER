@@ -1,4 +1,4 @@
-local BASE_URL = "https://lns-custom-auth.lunasgustavo760.workers.dev"
+local BASE_URL = https://lnsdownloader.lunasgustavo760.workers.dev/"
 local LOADER_URL = BASE_URL .. "/lnsDownloader"
 
 local RETRY_DELAY = 2000
